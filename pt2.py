@@ -41,27 +41,19 @@ class Trapezoid:
         pygame.draw.aalines(screen,self.color,False,self.points)
 
     def expand(self):
-        global traps2
-        traps2.clear()
         if self.ID == 1:
-            print("ayo")
             traps2.append(Trapezoid(self.p1x,self.p1y,self.scale/2,2))
             traps2.append(Trapezoid(self.p1x,self.p1y,self.scale/2,1))
             traps2.append(Trapezoid(self.p2x,self.p2y,self.scale/2,3))
             return
         if self.ID == 2:
-            traps2.append(Trapezoid(self.p1x,self.p1y,self.scale/2,1))
+            traps2.append(Trapezoid(self.p3x,self.p3y,self.scale/2,1))
             traps2.append(Trapezoid(self.p1x,self.p1y,self.scale/2,2))
-            traps2.append(Trapezoid(self.p2x,self.p2y,self.scale/2,3))
-            return
+            traps2.append(Trapezoid(self.p0x,self.p0y,self.scale/2,3))
         if self.ID == 3:
-            traps2.append(Trapezoid(self.p1x,self.p1y,self.scale/2,2))
+            traps2.append(Trapezoid(self.p0x,self.p0y,self.scale/2,2))
             traps2.append(Trapezoid(self.p1x,self.p1y,self.scale/2,3))
             traps2.append(Trapezoid(self.p2x,self.p2y,self.scale/2,1))
-            return
-
-        
-
 
 pygame.init()
 
@@ -70,27 +62,38 @@ screen = pygame.display.set_mode((1920, 1080))
 screen.fill((0,0,0))
 Running = True
 
-# T1 = Trapezoid(500,500,200,1)
-# T2 = Trapezoid(T1.p0x,T1.p0y,200,2)
-# T3 = Trapezoid(T1.p3x,T1.p3y,200,3)
-
 traps = [Trapezoid(600,800,400,1)]
 traps2 = []
+count = 0
 
-test = True
+open = False
 
 while Running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             Running = False
 
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_LCTRL]:
-        Running = False
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_LCTRL]:
+            Running = False
+        if keys[pygame.K_SPACE]:
+            open = True
+            count += 1
 
     screen.fill((0,0,0))
+    
     for trap in traps:
         trap.draw()
-        trap.expand()
+        if open:
+            trap.expand()
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_LCTRL]:
+            Running = False
+            break
+        pygame.display.flip()
+    if open:
+        traps = traps2.copy()
+        traps2.clear()
+        open = False
 
-    pygame.display.flip()
+    #pygame.display.flip()
